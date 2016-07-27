@@ -30,7 +30,7 @@ describe('TrailStoreService', () => {
     ]);
 
     beforeEach(<any>inject([MockBackend], (backend: MockBackend) => {
-        trails = [{name: Any.string(), location: {longitude: Any.number(), latitude: Any.number()}}];
+        trails = [Any.trailObject(), Any.trailObject()];
         const baseResponse = new Response(new ResponseOptions({body: trails}));
         backend.connections.subscribe((c: MockConnection) => {
           if(c.request.url === "http://localhost:9000/trails" && c.request.method === RequestMethod.Get) {

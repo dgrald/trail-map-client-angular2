@@ -6,12 +6,14 @@ export class Any {
   }
 
   public static string(): string {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    for( var i=0; i < 5; i++ ) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+    return _.reduce(_.range(1, 5), (accum, nextNum) => {
+        return accum += possible.charAt(Math.floor(Math.random() * possible.length));
+    }, "");
+  }
+
+  public static trailObject(): any {
+    return {name: Any.string(), location: {longitude: Any.number(), latitude: Any.number()}};
   }
 };
