@@ -15,12 +15,42 @@ export type Trail = {
 
 @Injectable()
 export class TrailStoreService {
-  private static URL = 'http://localhost:9000/trails';
+  private static URL = 'http://localhost:8080/trails';
 
-  constructor(private http: Http) {}
+  public trailStore: Array<any> = [];
+  public trailFeed: Observable<any>;
+  private trailObserver: any;
 
-  public getTrails(): Observable<any> {
-    return this.http.get(TrailStoreService.URL)
-      .map(response => response.json());
+  constructor(private http: Http) {
+    this.trailFeed = new Observable(observer => {
+      this.trailObserver = observer;
+    });
+    this.getTrails();
   }
+
+  private getTrails(): void {
+    this.http.get(TrailStoreService.URL)
+      .map(response => {console.log(response); return response.json();})
+      .map(stream => stream.map(res => {
+        return {
+          name: res.name,
+          location: {
+              longitude: res.location.longitude,
+              latitude: res.location.latitude
+          }
+        }
+      }))
+      .subscribe(
+        trails => {
+          this.trailStore = trails;
+          trails.forEach(trail => this.trailObserver.next(trail))
+        },
+        error => console.log(error)
+      );
+  }
+
+  addTrail(trail: any): void {
+    this.trailObserver.next(trail);
+  }
+
 };

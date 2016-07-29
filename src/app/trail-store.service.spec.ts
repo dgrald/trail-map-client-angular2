@@ -33,7 +33,7 @@ describe('TrailStoreService', () => {
         trails = [Any.trailObject(), Any.trailObject()];
         const baseResponse = new Response(new ResponseOptions({body: trails}));
         backend.connections.subscribe((c: MockConnection) => {
-          if(c.request.url === "http://localhost:9000/trails" && c.request.method === RequestMethod.Get) {
+          if(c.request.url === "http://localhost:8080/trails" && c.request.method === RequestMethod.Get) {
             c.mockRespond(baseResponse);
           }
         });
@@ -41,7 +41,7 @@ describe('TrailStoreService', () => {
 
     describe('getTrais()', () => {
       it('should return the trails', inject([TrailStoreService], (testService: TrailStoreService) => {
-        testService.getTrails().subscribe(response => {
+        testService.trailFeed.subscribe(response => {
           expect(response).toEqual(trails);
         });
       }));

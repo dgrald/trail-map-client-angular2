@@ -9,13 +9,18 @@
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
-  'lodash': 'vendor/lodash/lodash.js'
+  'lodash': 'vendor/lodash/lodash.js',
+  'angular2-google-maps': 'vendor/angular2-google-maps'
 };
 
 /** User packages configuration. */
 const packages: any = {
   'lodash':{
     format: 'cjs'
+  },
+  'angular2-google-maps/core': {
+    defaultExtension: 'js',
+    main: 'index.js'
   }
 };
 
@@ -39,13 +44,14 @@ const barrels: string[] = [
 
   // App specific barrels.
   'app',
-  'app/shared',
+  'app/shared'
   /** @cli-barrel */
 ];
 
 const cliSystemConfigPackages: any = {};
 barrels.forEach((barrelName: string) => {
-  cliSystemConfigPackages[barrelName] = { main: 'index' };
+  let main: string = barrelName === 'rxjs' ? 'Rx' : 'index';
+  cliSystemConfigPackages[barrelName] = { main: main };
 });
 
 /** Type declaration for ambient System. */
