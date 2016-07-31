@@ -3,26 +3,36 @@ import { Http, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
-export type Location = {
-  longitude: number,
-  latitude: number
+class Location {
+  longitude: number;
+  latitude: number;
+
+  constructor(longitude: number, latitude: number) {
+      this.longitude = longitude;
+      this.latitude = latitude;
+  }
 };
 
-export type Trail = {
-  name: string,
-  location: Location
+class Trail {
+  name: string;
+  location: Location;
+
+  constructor(name: string, location: Location) {
+      this.name = name;
+      this.location = location;
+  }
 };
 
 @Injectable()
 export class TrailStoreService {
   private static URL = 'http://localhost:8080/trails';
 
-  public trailStore: Array<any> = [];
-  public trailFeed: Observable<any>;
+  public trailStore: Array<Trail> = [];
+  public trailFeed: Observable<Trail>;
   private trailObserver: any;
 
   constructor(private http: Http) {
-    this.trailFeed = new Observable(observer => {
+    this.trailFeed = new Observable<Trail>(observer => {
       this.trailObserver = observer;
     });
     this.getTrails();
@@ -30,16 +40,11 @@ export class TrailStoreService {
 
   private getTrails(): void {
     this.http.get(TrailStoreService.URL)
-      .map(response => {console.log(response); return response.json();})
+      .map(response => response.json())
       .map(stream => stream.map(res => {
-        return {
-          name: res.name,
-          location: {
-              longitude: res.location.longitude,
-              latitude: res.location.latitude
-          }
-        }
-      }))
+        return new Trail(res.name, new Location(res.location.longitude, res.location.latitude));
+      }
+      ))
       .subscribe(
         trails => {
           this.trailStore = trails;
